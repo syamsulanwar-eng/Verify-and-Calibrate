@@ -1,0 +1,8 @@
+{
+  "name": "Remix CalibraTrack - Sistem Pengurusan Kalibrasi \u0026 Verifikasi",
+  "description": "Papan pemuka berpusat untuk pengurusan inventori peralatan makmal, status verifikasi bulanan, log kalibrasi vendor, dan amaran tarikh luput.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

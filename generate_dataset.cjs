@@ -1,0 +1,518 @@
+const fs = require('fs');
+
+const rawData = [
+  // Page 1 - Batch 1
+  {
+    no: 1, batch: 'BATCH 1', out: true, in: true, type: 'BALANCE', noId: 'B03',
+    manufacturer: 'METTLER TOLEDO', model: 'ML-204', refNo: 'LGM/BKPT/H/14/44',
+    operator: 'NOORHISHAM', premise: '260', location: 'B033 - Chromatography',
+    iso: 'Yes', calPoint: 'Capacity : 220 g x 0.1 mg, 11 points + Adjustment', note: ''
+  },
+  {
+    no: 2, batch: 'BATCH 1', out: true, in: true, type: 'BALANCE', noId: 'B04',
+    manufacturer: 'METTLER TOLEDO', model: 'ME-204', refNo: 'B302704318',
+    operator: 'SYAMSUL', premise: '260', location: 'B042 - Thermal / GTACR',
+    iso: 'Yes', calPoint: 'Capacity : 220 g x 0.1 mg, 11 points + Adjustment', note: ''
+  },
+  {
+    no: 3, batch: 'BATCH 1', out: true, in: true, type: 'BALANCE', noId: 'B05',
+    manufacturer: 'SARTORIUS', model: 'QUINTIX224-1S', refNo: 'LGM/BKPT/H/15/74',
+    operator: 'AFIQ', premise: '260', location: 'B048 - Nitrosamine',
+    iso: 'Yes', calPoint: 'Capacity : 220 g x 0.1 mg, 11 points + Adjustment', note: ''
+  },
+  {
+    no: 4, batch: 'BATCH 1', out: true, in: true, type: 'BALANCE', noId: 'B06',
+    manufacturer: 'SARTORIUS', model: 'QUINTIX5102-1S', refNo: 'LGM/BKPT/H/15/50',
+    operator: 'AFIQ', premise: '260', location: 'B048 - Nitrosamine',
+    iso: 'Yes', calPoint: 'Capacity : 5100 g x 0.01 g, 11 points + Adjustment', note: ''
+  },
+  {
+    no: 5, batch: 'BATCH 1', out: true, in: true, type: 'BALANCE', noId: 'B07',
+    manufacturer: 'METTLER TOLEDO', model: 'AB-204', refNo: 'LGM/BTK/UPB/H/96/4',
+    operator: 'NORASMIDA', premise: '260', location: 'B039 - Spectroscopy',
+    iso: 'Yes', calPoint: 'Capacity : 210 g x 0.1 mg, 11 points + Adjustment', note: ''
+  },
+  {
+    no: 6, batch: 'BATCH 1', out: true, in: true, type: 'Data Logger', noId: 'DTL1',
+    manufacturer: 'TESTO', model: '175H1', refNo: 'LGM/BKPT/UPKS/H/22/5',
+    operator: 'NOORHISHAM', premise: '260', location: 'B033 - Chromatography',
+    iso: 'Yes', calPoint: '30, 50, 60, 70, 80 °C', note: ''
+  },
+  {
+    no: 7, batch: 'BATCH 1', out: true, in: true, type: 'Micropipete 1000ul (100-1000ul)', noId: 'MCP1',
+    manufacturer: 'Brand', model: 'Transferpette S', refNo: '02H69930',
+    operator: 'NOORHISHAM', premise: '260', location: 'B033 - Chromatography',
+    iso: 'Yes', calPoint: '100, 500, 1000 ul', note: ''
+  },
+  {
+    no: 8, batch: 'BATCH 1', out: true, in: true, type: 'Micropipete 1000ul (100-1000ul)', noId: 'MCP11',
+    manufacturer: 'Brand', model: 'Transferpette S', refNo: '03G60965',
+    operator: 'AFIQ', premise: '260', location: 'B050 - Nitrosamine',
+    iso: 'Yes', calPoint: '100, 500, 1000 ul', note: ''
+  },
+  {
+    no: 9, batch: 'BATCH 1', out: true, in: true, type: 'Micropipete 20ul (2-20ul)', noId: 'MCP4',
+    manufacturer: 'Brand', model: 'Transferpette S', refNo: '12G48841',
+    operator: 'NOORHISHAM', premise: '260', location: 'B033 - Chromatography',
+    iso: 'Yes', calPoint: '5, 10, 15, 20 ul', note: ''
+  },
+  {
+    no: 10, batch: 'BATCH 1', out: true, in: true, type: 'Micropipete 5ml (0.5-5ml)', noId: 'MCP6',
+    manufacturer: 'Brand', model: 'Transferpette S', refNo: '11E48761',
+    operator: 'AFIQ', premise: '260', location: 'B050 - Nitrosamine',
+    iso: 'Yes', calPoint: '0.5, 2.5, 5 mL', note: ''
+  },
+  {
+    no: 11, batch: 'BATCH 1', out: true, in: true, type: 'Multimeter & Probe', noId: 'MM01',
+    manufacturer: 'TESTO', model: '440dP', refNo: 'LGM/BKPT/UPKS/H/21/10',
+    operator: 'FANDI', premise: '260', location: 'B032 - Staff Room',
+    iso: 'Yes', calPoint: 'Testo 440 dP (Air Velocity) & Hot Wire Probe (Temp & air speed: 10, 20, 30, 50, 70 °C)', note: ''
+  },
+  {
+    no: 12, batch: 'BATCH 1', out: true, in: true, type: 'OVEN', noId: 'OV02',
+    manufacturer: 'MEMMERT', model: 'UF-55', refNo: 'LGM/BKPT/H/16/8',
+    operator: 'NOORHISHAM', premise: '260', location: 'B033 - Chromatography',
+    iso: 'Yes', calPoint: '40, 60, 70, 90, 110, 9 sensors', note: ''
+  },
+  {
+    no: 13, batch: 'BATCH 1', out: true, in: true, type: 'OVEN', noId: 'OV04',
+    manufacturer: 'MEMMERT', model: 'UF-110', refNo: 'LGM/BKPT/H/16/87',
+    operator: 'AFIQ', premise: '260', location: 'B048 - Nitrosamine',
+    iso: 'Yes', calPoint: '40, 60, 70, 90, 110, 210, 9 sensors', note: ''
+  },
+  {
+    no: 14, batch: 'BATCH 1', out: true, in: true, type: 'PH Meter', noId: 'PH-EASY',
+    manufacturer: 'METTLER TOLEDO', model: 'Five Easy', refNo: 'LGM/BKPT/H/18/29',
+    operator: 'NOORHISHAM', premise: '260', location: 'B033 - Chromatography',
+    iso: 'Yes', calPoint: '1, 4, 7, 11 pH (Electrical Stimulation) SAMM 256', note: ''
+  },
+  {
+    no: 15, batch: 'BATCH 1', out: true, in: true, type: 'Standard Weight', noId: 'STD-W01',
+    manufacturer: 'METTLER TOLEDO', model: 'F1', refNo: 'LGM/BKPT/H/20/8',
+    operator: 'FANDI', premise: '260', location: 'B032 - Staff Room',
+    iso: 'Yes', calPoint: '23 pcs / set (Cal Only 1mg, 10mg, 100mg, 1g, 10g, 100g, 200g)', note: ''
+  },
+  {
+    no: 16, batch: 'BATCH 1', out: true, in: true, type: 'WaterBath', noId: 'WTB01',
+    manufacturer: 'MEMMERT', model: 'WNE29', refNo: 'LGM/BKPT/UPKS/H/21/7',
+    operator: 'AFIQ', premise: '260', location: 'B050 - Nitrosamine',
+    iso: 'Yes', calPoint: '30, 40, 50, 60, 70, 80 °C, 5 sensors', note: ''
+  },
+  {
+    no: 17, batch: 'BATCH 1', out: true, in: true, type: 'Data Logger', noId: 'DTL4',
+    manufacturer: 'TESTO', model: '175H1', refNo: 'LGM/BKPT/UPKS/H/22/6',
+    operator: 'NORASMIDA', premise: '260', location: 'B039 - Spectroscopy',
+    iso: 'Yes', calPoint: '30, 50, 60, 70, 80 °C', note: ''
+  },
+  {
+    no: 18, batch: 'BATCH 1', out: true, in: true, type: 'Data Logger', noId: 'DTL5',
+    manufacturer: 'TESTO', model: '175H1', refNo: 'LGM/BKPT/UPKS/H/24/1',
+    operator: 'AFIQ', premise: '260', location: 'B050 - Nitrosamine',
+    iso: 'Yes', calPoint: '30, 50, 60, 70, 80 °C', note: ''
+  },
+  {
+    no: 19, batch: 'BATCH 1', out: true, in: true, type: 'Micropipete 1000ul', noId: 'MCP16',
+    manufacturer: 'Brand', model: 'Transferpette S (TraffLab)', refNo: '03J57912',
+    operator: 'AFIQ', premise: '260', location: 'B050 - Nitrosamine',
+    iso: 'Yes', calPoint: '100, 500, 1000 ul', note: ''
+  },
+  {
+    no: 20, batch: 'BATCH 1', out: true, in: true, type: 'Micropipete 200ul (20-200ul)', noId: 'MCP19',
+    manufacturer: 'Brand', model: 'Transferpette S (TraffLab)', refNo: '05N89282',
+    operator: 'AFIQ', premise: '260', location: 'B050 - Nitrosamine',
+    iso: 'Yes', calPoint: '50, 100, 200 ul', note: ''
+  },
+  {
+    no: 21, batch: 'BATCH 1', out: true, in: true, type: 'Micropipete 5ml (5-5ml)', noId: 'MCP8',
+    manufacturer: 'Rainin', model: 'Lite XLS', refNo: 'B736645189',
+    operator: 'AFIQ', premise: '260', location: 'B050 - Nitrosamine',
+    iso: 'Yes', calPoint: '0.5, 2.5, 5 mL', note: ''
+  },
+  {
+    no: 22, batch: 'BATCH 1', out: true, in: true, type: 'Digital Thermometer', noId: 'DT1',
+    manufacturer: 'Alla', model: 'F-IP 65', refNo: 'LGM/BKPT/UPKS/I/25/4',
+    operator: 'AFIQ', premise: '260', location: 'B050 - Nitrosamine',
+    iso: 'Yes', calPoint: '30, 40, 50, 60, 80, 100°C', note: ''
+  },
+  {
+    no: 23, batch: 'BATCH 1', out: true, in: true, type: 'Micropipette 100ul (10-100ul)', noId: 'MCP24',
+    manufacturer: 'Brand', model: 'Transferpette S', refNo: '23J72818',
+    operator: 'NOORHISHAM', premise: '260', location: 'B033 - Chromatography',
+    iso: 'Yes', calPoint: '10, 50, 100 ul', note: ''
+  },
+  {
+    no: 24, batch: 'BATCH 1', out: true, in: true, type: 'BALANCE', noId: 'B01',
+    manufacturer: 'METTLER TOLEDO', model: 'XSR 105', refNo: 'LGM/BKPT/H/20/7',
+    operator: 'ISWARDI', premise: '260', location: 'B159 - Makmal UPKS 1',
+    iso: 'Yes', calPoint: 'Capacity : 120 g x 0.01 mg, 11 points + Adjustment', note: ''
+  },
+  {
+    no: 25, batch: 'BATCH 1', out: true, in: true, type: 'BALANCE', noId: 'B02',
+    manufacturer: 'SARTORIUS', model: 'ENTRIS224-1S', refNo: 'LGM/BKPT/H/18/19',
+    operator: 'ISWARDI', premise: '260', location: 'B159 - Makmal UPKS 1',
+    iso: 'Yes', calPoint: 'Capacity : 210 g x 0.1 mg, 11 points + Adjustment', note: ''
+  },
+  {
+    no: 26, batch: 'BATCH 1', out: false, in: false, type: 'Micropipette (1000 ul)', noId: 'MP3',
+    manufacturer: 'VitLab', model: 'Bit Lab', refNo: '11L03927',
+    operator: 'SITI ZAKIAH', premise: '260', location: 'B159 - Makmal UPKS 1',
+    iso: 'Yes', calPoint: '100, 500, 1000 ul', note: 'Hilang'
+  },
+  {
+    no: 27, batch: 'BATCH 1', out: true, in: true, type: 'Micropipette (0.5ul-10ul)', noId: 'MP4',
+    manufacturer: 'BOECO', model: 'SA Series', refNo: 'ML953312',
+    operator: 'SITI ZAKIAH', premise: '260', location: 'B159 - Makmal UPKS 1',
+    iso: 'Yes', calPoint: '2, 5, 8, 10 ul', note: ''
+  },
+  {
+    no: 28, batch: 'BATCH 1', out: true, in: true, type: 'Micropipette (100ul)', noId: 'MP6',
+    manufacturer: 'VitLab', model: 'Bit Lab', refNo: '02L89080',
+    operator: 'SITI ZAKIAH', premise: '260', location: 'B159 - Makmal UPKS 1',
+    iso: 'Yes', calPoint: '10, 50, 100 ul', note: ''
+  },
+  {
+    no: 29, batch: 'BATCH 1', out: true, in: true, type: 'Micropipette (100ul-1000ul)', noId: 'MP13',
+    manufacturer: 'THERMO SCIENTIFIC', model: 'Finnpipette F1', refNo: 'JH14825',
+    operator: 'SITI ZAKIAH', premise: '260', location: 'B159 - Makmal UPKS 1',
+    iso: 'Yes', calPoint: '100, 500, 1000 ul', note: ''
+  },
+  {
+    no: 30, batch: 'BATCH 1', out: true, in: true, type: 'Micropipette (20ul-200ul)', noId: 'MP15',
+    manufacturer: 'Brand', model: 'Transferpette S', refNo: '22G25366',
+    operator: 'SITI ZAKIAH', premise: '260', location: 'B159 - Makmal UPKS 2',
+    iso: 'Yes', calPoint: '50, 100, 200 ul', note: ''
+  },
+  {
+    no: 31, batch: 'BATCH 1', out: true, in: true, type: 'Micropipette (20ul-200ul)', noId: 'MP16',
+    manufacturer: 'Brand', model: 'Transferpette S', refNo: '21K70426',
+    operator: 'SITI ZAKIAH', premise: '260', location: 'B159 - Makmal UPKS 2',
+    iso: 'Yes', calPoint: '50, 100, 200 ul', note: ''
+  },
+  {
+    no: 32, batch: 'BATCH 1', out: true, in: true, type: 'Micropipette (10-100uL)', noId: 'MP17',
+    manufacturer: 'Brand', model: 'Transferpette S', refNo: '21B20305',
+    operator: 'SITI ZAKIAH', premise: '260', location: 'B159 - Makmal UPKS 2',
+    iso: 'Yes', calPoint: '10, 50, 100 ul', note: ''
+  },
+  {
+    no: 33, batch: 'BATCH 1', out: true, in: true, type: 'Micropipette (5mL)', noId: 'MP18',
+    manufacturer: 'Brand', model: 'Transferpette S', refNo: '24C63472',
+    operator: 'SITI ZAKIAH', premise: '260', location: 'B159 - Makmal UPKS 2',
+    iso: 'Yes', calPoint: '0.5, 2.5, 5 mL', note: ''
+  },
+  {
+    no: 34, batch: 'BATCH 1', out: true, in: true, type: 'Micropipette (10mL)', noId: 'MP19',
+    manufacturer: 'Brand', model: 'Transferpette S', refNo: '24J58732',
+    operator: 'SITI ZAKIAH', premise: '260', location: 'B159 - Makmal UPKS 2',
+    iso: 'Yes', calPoint: '1, 3, 6, 10 mL', note: ''
+  },
+  {
+    no: 35, batch: 'BATCH 1', out: true, in: true, type: 'OVEN', noId: 'OV10',
+    manufacturer: 'MEMMERT', model: 'ULM-400', refNo: 'LGM/BTK/UPB/H/96/10',
+    operator: 'SAADAH', premise: '260', location: 'B158 - Makmal UPKS 2',
+    iso: 'Yes', calPoint: '40, 60, 70, 90, 110 °C, 9 sensors', note: ''
+  },
+  {
+    no: 36, batch: 'BATCH 1', out: false, in: false, type: 'OVEN', noId: 'OV01',
+    manufacturer: 'MEMMERT', model: 'UF-110', refNo: 'LGM/BKPT/H/15/98',
+    operator: 'ISWARDI', premise: '260', location: 'B159 - Makmal UPKS 1',
+    iso: 'Yes', calPoint: '40, 60, 70, 90, 110 °C, 9 sensors', note: ''
+  },
+  {
+    no: 37, batch: 'BATCH 1', out: true, in: true, type: 'Titrator Bottle Top Burette - 50ml', noId: 'TB50-1',
+    manufacturer: 'Brand Germany', model: 'Titrette', refNo: 'LGM/BKPT/UPKS/H/20/2',
+    operator: 'SITI ZAKIAH', premise: '260', location: 'B159 - Makmal UPKS 1',
+    iso: 'Yes', calPoint: 'Std Nominals', note: ''
+  },
+  {
+    no: 38, batch: 'BATCH 1', out: false, in: false, type: 'BALANCE', noId: 'B10',
+    manufacturer: 'SARTORIUS', model: 'CUBIS 2', refNo: 'LGM/BKPT/UPKS/H/20/4',
+    operator: 'ZAIDI', premise: 'SG BULOH', location: 'GF/R001 - Sg Buloh',
+    iso: 'Yes', calPoint: 'Capacity : 120 g x 0.1 mg, 11 points + adjustment', note: ''
+  },
+  {
+    no: 39, batch: 'BATCH 1', out: false, in: false, type: 'BALANCE', noId: 'B11',
+    manufacturer: 'SARTORIUS', model: 'SAR-BCE201L-LP', refNo: 'LGM/BKPT/UPKS/H/21/2',
+    operator: 'MAHFUDZUH', premise: 'SG BULOH', location: 'B035 - Sg Buloh',
+    iso: 'Yes', calPoint: 'Capacity : 220 g x 0.1 mg, 11 points + adjustment', note: ''
+  },
+  {
+    no: 40, batch: 'BATCH 1', out: false, in: false, type: 'Block Heater - 1', noId: 'BH01',
+    manufacturer: 'STUART', model: 'SBH200D', refNo: 'LGM/BKPT/H/20/2',
+    operator: 'ZAIDI', premise: 'SG BULOH', location: 'NMR - Sg Buloh',
+    iso: 'Yes', calPoint: '150 and 200 °C, 5 sensors', note: ''
+  },
+  {
+    no: 41, batch: 'BATCH 1', out: false, in: false, type: 'Block Heater - 2', noId: 'BH02',
+    manufacturer: 'STUART', model: 'SBH200D', refNo: 'LGM/BTK/UPB/H/08/49',
+    operator: 'ZAIDI', premise: 'SG BULOH', location: 'NMR - Sg Buloh',
+    iso: 'Yes', calPoint: '150 and 200 °C, 5 sensors', note: ''
+  },
+  {
+    no: 42, batch: 'BATCH 1', out: true, in: true, type: 'Carbolite Furnace', noId: 'CF01',
+    manufacturer: 'Carbolite', model: 'CWF 1236-400TN', refNo: 'LGM/BKPT/H/18/52',
+    operator: 'MAHFUDZUH', premise: 'SG BULOH', location: 'B035 - Sg Buloh',
+    iso: 'Yes', calPoint: '( 550 °C ), 2 sensor', note: ''
+  },
+  {
+    no: 43, batch: 'BATCH 1', out: true, in: true, type: 'Digital Bench Top Shaker', noId: 'SHK01',
+    manufacturer: 'IKA-Germany', model: 'KS 501 Digital', refNo: 'LGM/BTK/UPB/H/08/16',
+    operator: 'MAHFUDZUH', premise: 'SG BULOH', location: 'B035 - Sg Buloh',
+    iso: 'Yes', calPoint: '500, 1000, 1500 rpm', note: ''
+  },
+  {
+    no: 44, batch: 'BATCH 1', out: true, in: true, type: 'Digital Hot Plate SD500', noId: 'HP01',
+    manufacturer: 'STUART', model: 'SD500', refNo: 'LGM/BKPT/H/19/03',
+    operator: 'MAHFUDZUH', premise: 'SG BULOH', location: 'B035 - Sg Buloh',
+    iso: 'Yes', calPoint: '100 °C', note: ''
+  },
+  {
+    no: 45, batch: 'BATCH 1', out: true, in: true, type: 'Digital Pipette 10 ml', noId: 'DP01',
+    manufacturer: 'SARTORIUS', model: 'Picus', refNo: 'LGM/BKPT/UPKS/I/12/2',
+    operator: 'MAHFUDZUH', premise: 'SG BULOH', location: 'B035 - Sg Buloh',
+    iso: 'Yes', calPoint: '1, 3, 6, 10 mL', note: ''
+  },
+  {
+    no: 46, batch: 'BATCH 1', out: true, in: true, type: 'Hot Plate Stirrer', noId: 'HPS01',
+    manufacturer: 'IKA', model: 'C-MAG HS 7 S002', refNo: 'LGM/BKPT/H/15/75',
+    operator: 'MAHFUDZUH', premise: 'SG BULOH', location: 'B035 - Sg Buloh',
+    iso: 'Yes', calPoint: '100 °C + 500, 1000, 1500 rpm', note: ''
+  },
+  {
+    no: 47, batch: 'BATCH 1', out: true, in: true, type: 'Lab Centrifuge', noId: 'CENT01',
+    manufacturer: 'Thermo Fisher', model: 'Megafure 8R', refNo: 'LGM/BKPT/H/18/31',
+    operator: 'MAHFUDZUH', premise: 'SG BULOH', location: 'B035 - Sg Buloh',
+    iso: 'Yes', calPoint: '1500, 3000, 4500 rpm + 1, 5, 10 min', note: ''
+  },
+  {
+    no: 48, batch: 'BATCH 1', out: true, in: true, type: 'OVEN', noId: 'OV08',
+    manufacturer: 'MEMMERT', model: 'UF-110', refNo: 'LGM/BKPT/H/18/40',
+    operator: 'MAHFUDZUH', premise: 'SG BULOH', location: 'B035 - Sg Buloh',
+    iso: 'Yes', calPoint: '40, 60, 70, 90, 110 °C, 9 sensors', note: ''
+  },
+  {
+    no: 49, batch: 'BATCH 1', out: true, in: true, type: 'PH Meter', noId: 'PH02',
+    manufacturer: 'METTLER TOLEDO', model: 'Seven Compact', refNo: 'LGM/BKPT/H/16/19',
+    operator: 'MAHFUDZUH', premise: 'SG BULOH', location: 'B035 - Sg Buloh',
+    iso: 'Yes', calPoint: '4, 7, 11 pH (Electrical Stimulation) SAMM 256', note: ''
+  },
+  {
+    no: 50, batch: 'BATCH 1', out: true, in: true, type: 'PH Meter', noId: 'PH03',
+    manufacturer: 'METTLER TOLEDO', model: 'Seven Compact', refNo: 'LGM/BKPT/H/18/51',
+    operator: 'MAHFUDZUH', premise: 'SG BULOH', location: 'B035 - Sg Buloh',
+    iso: 'Yes', calPoint: '4, 7, 11 pH (Electrical Stimulation) SAMM 256', note: ''
+  },
+  {
+    no: 51, batch: 'BATCH 1', out: true, in: true, type: 'Waterbath', noId: 'WTB02',
+    manufacturer: 'STUART', model: 'SWB3D', refNo: 'LGM/BKPT/H/16/40',
+    operator: 'MAHFUDZUH', premise: 'SG BULOH', location: 'B035 - Sg Buloh',
+    iso: 'Yes', calPoint: '30, 40, 50, 60, 70, 80 °C, 5 sensors', note: ''
+  },
+  {
+    no: 52, batch: 'BATCH 1', out: true, in: true, type: 'Waterbath', noId: 'WTB03',
+    manufacturer: 'MEMMERT', model: 'MMT-WNB', refNo: 'LGM/BKPT/UPKS/H/21/04',
+    operator: 'MAHFUDZUH', premise: 'SG BULOH', location: 'B035 - Sg Buloh',
+    iso: 'Yes', calPoint: '30, 40, 50, 60, 70, 80 °C, 5 sensors', note: ''
+  },
+  {
+    no: 53, batch: 'BATCH 1', out: true, in: true, type: 'Digital Pipette 5 ml', noId: 'DP02',
+    manufacturer: 'SARTORIUS', model: 'Picus', refNo: 'LGM/BKT/UPB/H/12/14',
+    operator: 'MAHFUDZUH', premise: 'SG BULOH', location: 'B035 - Sg Buloh',
+    iso: 'Yes', calPoint: '0.5, 2.5, 5 mL', note: ''
+  },
+  {
+    no: 54, batch: 'BATCH 1', out: true, in: true, type: 'Micropipette 1ml', noId: 'MP25',
+    manufacturer: 'BOECO', model: '16B21639', refNo: '16B21639',
+    operator: 'MAHFUDZUH', premise: 'SG BULOH', location: 'B035 - Sg Buloh',
+    iso: 'Yes', calPoint: '100, 500, 1000 ul', note: ''
+  },
+  {
+    no: 55, batch: 'BATCH 1', out: true, in: true, type: 'Micro-centrifuge', noId: 'MCENT01',
+    manufacturer: 'Profuge 6K', model: 'C1301', refNo: 'LGM/BTK/UPB/H/04/28',
+    operator: 'SUHAIMI', premise: 'SG BULOH', location: 'NMR - Sg Buloh',
+    iso: 'Yes', calPoint: '1000, 3000, 6000 rpm + 1, 5, 10 min', note: ''
+  },
+  {
+    no: 56, batch: 'BATCH 1', out: false, in: false, type: 'Balance', noId: 'B09',
+    manufacturer: 'METTLER TOLEDO', model: 'Mettler Toledo XSE 205', refNo: 'LGM/BKPT/H/18/50',
+    operator: 'MAHFUDZUH', premise: 'SG BULOH', location: 'B035 - Sg Buloh',
+    iso: 'Yes', calPoint: 'Capacity : 120 g x 0.01 mg, 11 points + Adjustment', note: ''
+  },
+  {
+    no: 57, batch: 'BATCH 1', out: false, in: false, type: 'Standard Weight', noId: 'STD-W02',
+    manufacturer: 'METTLER TOLEDO', model: 'E2', refNo: 'STD-E2-SUHAIMI',
+    operator: 'SUHAIMI', premise: 'SG BULOH', location: 'NMR - Sg Buloh',
+    iso: 'Yes', calPoint: 'Cal for 1mg, 10mg, 100mg (3 PCS)', note: ''
+  },
+
+  // Page 2 - Batch 2
+  {
+    no: 58, batch: 'BATCH 2', out: true, in: false, type: 'Data Logger', noId: 'DTL2',
+    manufacturer: 'Comet S3121', model: 'S3121', refNo: 'LGM/BKPT/H/16/60',
+    operator: 'NOORHISHAM', premise: '260', location: 'B033 - Chromatography',
+    iso: 'Yes', calPoint: '30, 50, 60, 70, 80 °C', note: ''
+  },
+  {
+    no: 59, batch: 'BATCH 2', out: true, in: false, type: 'Micropipete 1000ul (100-1000ul)', noId: 'MCP10',
+    manufacturer: 'Brand', model: 'Transferpette S', refNo: '02H69934',
+    operator: 'AFIQ', premise: '260', location: 'B050 - Nitrosamine',
+    iso: 'Yes', calPoint: '100, 500, 1000 ul', note: ''
+  },
+  {
+    no: 60, batch: 'BATCH 2', out: true, in: false, type: 'Micropipete 5000ul (500-1000ul)', noId: 'MCP14',
+    manufacturer: 'Tettler', model: 'Transferpette 5000ul', refNo: '16073924',
+    operator: 'AFIQ', premise: '260', location: 'B050 - Nitrosamine',
+    iso: 'Yes', calPoint: '100, 500, 1000 ul', note: ''
+  },
+  {
+    no: 61, batch: 'BATCH 2', out: true, in: false, type: 'Thicknes Gauge', noId: 'THG01',
+    manufacturer: 'MITUTOYO', model: 'ID-C1012XBS (547-321)', refNo: '8084515',
+    operator: 'NOORHISHAM', premise: '260', location: 'B033 - Chromatography',
+    iso: 'Yes', calPoint: 'Standard Nominals', note: ''
+  },
+  {
+    no: 62, batch: 'BATCH 2', out: true, in: false, type: 'Data Logger', noId: 'DTL3',
+    manufacturer: 'TESTO', model: '176T4', refNo: '40713324603',
+    operator: 'AFIQ', premise: '260', location: 'B050 - Nitrosamine',
+    iso: 'Yes', calPoint: '30, 50, 60, 70, 80 °C', note: ''
+  },
+  {
+    no: 63, batch: 'BATCH 2', out: true, in: false, type: 'Micropipete 1000ul (100-1000ul)', noId: 'MCP22',
+    manufacturer: 'Brand', model: 'Transferpette S', refNo: '07B1873',
+    operator: 'AFIQ', premise: '260', location: 'B050 - Nitrosamine',
+    iso: 'Yes', calPoint: '100, 500, 1000 ul', note: ''
+  },
+  {
+    no: 64, batch: 'BATCH 2', out: true, in: false, type: 'Micropipete 5ml (5-5ml)', noId: 'MCP7',
+    manufacturer: 'SARTORIUS', model: 'PROLINE PLUS', refNo: '15504197',
+    operator: 'AFIQ', premise: '260', location: 'B050 - Nitrosamine',
+    iso: 'Yes', calPoint: '0.5, 2.5, 5 mL', note: ''
+  },
+  {
+    no: 65, batch: 'BATCH 2', out: true, in: false, type: 'Data Logger', noId: 'DL2',
+    manufacturer: 'TESTO', model: '176T2', refNo: 'LGM/BKPT/H/19/50',
+    operator: 'SITI ZAKIAH', premise: '260', location: 'B159 - Makmal UPKS 1',
+    iso: 'Yes', calPoint: '30, 50, 60, 70, 80 °C', note: ''
+  },
+  {
+    no: 66, batch: 'BATCH 2', out: true, in: false, type: 'Micropipette (100 ul)', noId: 'MP1',
+    manufacturer: 'Brand', model: 'Transferpette S (TraffLab)', refNo: '02J35251',
+    operator: 'SITI ZAKIAH', premise: '260', location: 'B159 - Makmal UPKS 1',
+    iso: 'Yes', calPoint: '10, 50, 100 ul', note: ''
+  },
+  {
+    no: 67, batch: 'BATCH 2', out: true, in: false, type: 'Micropipette (20ul-200ul)', noId: 'MP2',
+    manufacturer: 'Brand', model: 'Transferpette S', refNo: '11G34562',
+    operator: 'SITI ZAKIAH', premise: '260', location: 'B159 - Makmal UPKS 1',
+    iso: 'Yes', calPoint: '50, 100, 200 ul', note: ''
+  },
+  {
+    no: 68, batch: 'BATCH 2', out: true, in: false, type: 'Micropipette (0.1ul-2.5ul)', noId: 'MP7',
+    manufacturer: 'BOECO', model: 'SA Series', refNo: 'LK678875',
+    operator: 'SITI ZAKIAH', premise: '260', location: 'B159 - Makmal UPKS 1',
+    iso: 'Yes', calPoint: '0.1, 0.25, 1.25, 2.5 ul', note: ''
+  },
+  {
+    no: 69, batch: 'BATCH 2', out: true, in: false, type: 'Micropipette (10ul)', noId: 'MP8',
+    manufacturer: 'Brand', model: 'Transferpette S (TraffLab)', refNo: '02H80999',
+    operator: 'SITI ZAKIAH', premise: '260', location: 'B159 - Makmal UPKS 1',
+    iso: 'Yes', calPoint: '2, 5, 8, 10 ul', note: ''
+  },
+  {
+    no: 70, batch: 'BATCH 2', out: true, in: false, type: 'Micropipette (0.5ul-10ul)', noId: 'MP9',
+    manufacturer: 'Cleaver Scientific Manufacturer', model: 'OmniPETTE', refNo: '856520234',
+    operator: 'SITI ZAKIAH', premise: '260', location: 'B159 - Makmal UPKS 1',
+    iso: 'Yes', calPoint: '2, 5, 8, 10 ul', note: ''
+  },
+  {
+    no: 71, batch: 'BATCH 2', out: true, in: false, type: 'Micropipette (20-200 ul)', noId: 'MP20',
+    manufacturer: 'Brand', model: 'Transferpette S', refNo: '10H90245',
+    operator: 'SITI ZAKIAH', premise: '260', location: 'B159 - Makmal UPKS 1',
+    iso: 'Yes', calPoint: '100, 500, 1000 ul', note: ''
+  },
+  {
+    no: 72, batch: 'BATCH 2', out: true, in: false, type: 'Micropipette (0.5ml-5ml)', noId: 'MP11-B2',
+    manufacturer: 'Brand', model: 'Transferpette S', refNo: '07H50947',
+    operator: 'SITI ZAKIAH', premise: '260', location: 'B159 - Makmal UPKS 1',
+    iso: 'Yes', calPoint: '0.5, 2.5, 5 mL', note: ''
+  },
+  {
+    no: 73, batch: 'BATCH 2', out: true, in: false, type: 'Micropipette (1ml-10ml)', noId: 'MP12',
+    manufacturer: 'Brand', model: 'Transferpette S', refNo: '16S89598',
+    operator: 'SITI ZAKIAH', premise: '260', location: 'B159 - Makmal UPKS 1',
+    iso: 'Yes', calPoint: '1, 3, 6, 10 mL', note: ''
+  },
+  {
+    no: 74, batch: 'BATCH 2', out: true, in: false, type: 'Micropipette (100ul-1000ul)', noId: 'MP14-B2',
+    manufacturer: 'VitLab', model: 'Bit Lab', refNo: '11L03928',
+    operator: 'SITI ZAKIAH', premise: '260', location: 'B159 - Makmal UPKS 1',
+    iso: 'Yes', calPoint: '100, 500, 1000 ul', note: ''
+  },
+  {
+    no: 75, batch: 'BATCH 2', out: true, in: true, type: 'PH Meter', noId: 'PH1',
+    manufacturer: 'METTLER TOLEDO', model: 'Seven Compact', refNo: 'LGM/BKPT/H/20/6',
+    operator: 'SITI ZAKIAH', premise: '260', location: 'B159 - Makmal UPKS 1',
+    iso: 'Yes', calPoint: '1, 4, 7, 11 pH (Electrical Stimulation) SAMM 256', note: ''
+  },
+  {
+    no: 76, batch: 'BATCH 2', out: true, in: true, type: 'Titrator Bottle Top Burette - 25ml', noId: 'TB25-1',
+    manufacturer: 'Brand Germany', model: 'Titrette', refNo: 'LGM/BKPT/UPKS/H/20/3',
+    operator: 'SITI ZAKIAH', premise: '260', location: 'B159 - Makmal UPKS 1',
+    iso: 'Yes', calPoint: 'Standard Nominals', note: ''
+  },
+  {
+    no: 77, batch: 'BATCH 2', out: true, in: true, type: 'Micropipette 10ml', noId: 'MP26',
+    manufacturer: 'SARTORIUS', model: 'Tacta', refNo: '19029984',
+    operator: 'MAHFUDZUH', premise: 'SG BULOH', location: 'B035 - Sg Buloh',
+    iso: 'Yes', calPoint: '1, 3, 6, 10 mL', note: ''
+  },
+  {
+    no: 78, batch: 'BATCH 2', out: true, in: true, type: 'Micropipette 1ml', noId: 'MP27',
+    manufacturer: 'SARTORIUS', model: 'Tacta', refNo: '19036612',
+    operator: 'MAHFUDZUH', premise: 'SG BULOH', location: 'B035 - Sg Buloh',
+    iso: 'Yes', calPoint: '100, 500, 1000 ul', note: ''
+  },
+  {
+    no: 79, batch: 'BATCH 2', out: true, in: true, type: 'Micropipette 5ml', noId: 'MP28',
+    manufacturer: 'SARTORIUS', model: 'Tacta', refNo: '19047697',
+    operator: 'MAHFUDZUH', premise: 'SG BULOH', location: 'B035 - Sg Buloh',
+    iso: 'Yes', calPoint: '0.5, 2.5, 5 mL', note: ''
+  }
+];
+
+function getCategory(type) {
+  const t = type.toLowerCase();
+  if (t.includes('balance')) return 'Jisim & Penimbangan';
+  if (t.includes('pipet')) return 'Volumetrik & Pipet';
+  if (t.includes('oven') || t.includes('heater') || t.includes('furnace') || t.includes('hot plate')) return 'Terma & Pemanas';
+  if (t.includes('logger') || t.includes('thermometer')) return 'Suhu & Persekitaran';
+  if (t.includes('ph')) return 'Elektrokimia & pH';
+  if (t.includes('waterbath')) return 'Peralatan Mandian Air';
+  if (t.includes('titrat') || t.includes('burette')) return 'Volumetrik & Titrasi';
+  if (t.includes('weight')) return 'Pemberat Standard';
+  if (t.includes('centrifuge') || t.includes('shaker')) return 'Emparan & Penggoncang';
+  if (t.includes('gauge')) return 'Dimensi & Ukuran';
+  if (t.includes('multimeter')) return 'Elektrik & Halaju Udara';
+  return 'Instrumen Makmal';
+}
+
+function getOperatorInfo(op) {
+  const map = {
+    'NOORHISHAM': { name: 'Noorhisham', email: 'noorhisham@lgm.gov.my', phone: '+6012-4019231' },
+    'SYAMSUL': { name: 'Syamsul Anwar', email: 'syamsulanwar@lgm.gov.my', phone: '+6012-3849102' },
+    'AFIQ': { name: 'Afiq', email: 'afiq@lgm.gov.my', phone: '+6013-4491022' },
+    'NORASMIDA': { name: 'Norasmida', email: 'norasmida@lgm.gov.my', phone: '+6017-3391028' },
+    'FANDI': { name: 'Fandi', email: 'fandi@lgm.gov.my', phone: '+6019-2281934' },
+    'ISWARDI': { name: 'Iswardi', email: 'iswardi@lgm.gov.my', phone: '+6012-9938102' },
+    'SITI ZAKIAH': { name: 'Siti Zakiah', email: 'sitizakiah@lgm.gov.my', phone: '+6013-8827104' },
+    'SAADAH': { name: 'Saadah', email: 'saadah@lgm.gov.my', phone: '+6016-7729103' },
+    'ZAIDI': { name: 'Zaidi', email: 'zaidi@lgm.gov.my', phone: '+6019-3329104' },
+    'MAHFUDZUH': { name: 'Mahfudzuh', email: 'mahfudzuh@lgm.gov.my', phone: '+6012-8819203' },
+    'SUHAIMI': { name: 'Suhaimi', email: 'suhaimi@lgm.gov.my', phone: '+6017-5519284' }
+  };
+  return map[op] || { name: op, email: `${op.toLowerCase().replace(/\\s+/g, '')}@lgm.gov.my`, phone: '+6012-0000000' };
+}
+
+console.log(`Total raw items: ${rawData.length}`);
+fs.writeFileSync('parsed_items.json', JSON.stringify(rawData, null, 2));
+console.log('Saved parsed_items.json');
